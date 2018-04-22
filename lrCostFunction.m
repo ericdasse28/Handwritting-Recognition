@@ -37,16 +37,18 @@ grad = zeros(size(theta));
 %
 
 h = sigmoid(X * theta);
-cost1 = y .* log(h);  % Costs for positive instances
-cost0 = (1-y) .* log(1-h);  % Costs for negative instances
-B = h - y; % Vector containing errors between h(theta'*x(i)) and y(i)
+cost1 = y' * log(h);  % Costs for positive instances
+cost0 = (1-y)' * log(1-h);  % Costs for negative instances
 
-% Incorporating regularization
-theta_js = theta([2, end]);
-reg_term = lambda/2 * sum(theta_js'*theta_js);  % lambda*(sum of theta(j)^2s)/2m
+% Regularization
+% Regularization term for cost
+reg_term = (lambda/(2*m)) * theta(2:end)' * theta(2:end);
 
-J = (1/m) * (-sum(cost1 + cost0) + reg_term);
-grad = (1/m) * X'*B + lambda*theta_js;
+% Regularization vector for gradient
+reg_vec = (lambda/m) * vertcat(0, theta(2:end));
+
+J = (-1/m) * (cost1 + cost0) + reg_term;
+grad = (1/m) * X' * (h - y) + reg_vec;
 
 
 
