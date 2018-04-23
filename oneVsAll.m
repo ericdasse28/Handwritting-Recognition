@@ -50,14 +50,24 @@ X = [ones(m, 1) X];
 %
 
 
+% Initializations for fmincg
+initial_theta = zeros(n+1, 1);
 
+% Set options for fminunc
+options = optimset('GradObj', 'on', 'MaxIter', 50);
 
+for i = 1:num_labels
+  % Binary version of y for each classifier
+  % y_bin is of the same size as y
+  y_bin = (y == i);
 
+  % Learn theta parameters
+  [theta] = fmincg (@(t)(lrCostFunction(t, X, y_bin, lambda)),... 
+  initial_theta, options);
 
-
-
-
-
+  % Place the theta parameters in the all_theta matrix
+  all_theta(i,:) = theta';
+end
 
 
 % =========================================================================
